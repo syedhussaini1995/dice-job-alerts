@@ -8,6 +8,11 @@ from email.mime.text import MIMEText
 EMAIL_USER = os.environ.get('EMAIL_USER')
 EMAIL_PASS = os.environ.get('EMAIL_PASS')
 
+
+print("EMAIL_USER:", EMAIL_USER)                  # for debugging
+print("EMAIL_PASS is set:", EMAIL_PASS is not None)
+
+
 def send_test_email():
     subject = "Test Email from Python"
     body = "Hello! This is a test email sent from your Python script."
