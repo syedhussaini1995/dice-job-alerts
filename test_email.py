@@ -15,6 +15,12 @@ EMAIL_PASS = os.environ.get('EMAIL_PASS')
 #EMAIL_USER = "udmey4me@gmail.com"
 #EMAIL_PASS = "uqldmfuccmhvyusj"
 
+print("EMAIL_USER length:", len(EMAIL_USER))
+print("EMAIL_PASS length:", len(EMAIL_PASS))
+print("EMAIL_PASS starts with:", EMAIL_PASS[0])  # Only first character
+
+
+
 def send_test_email():
     subject = "Test Email from Python"
     body = "Hello! This is a test email sent from your Python script."
