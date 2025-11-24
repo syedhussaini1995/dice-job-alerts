@@ -4,3 +4,4 @@ pandas
 selenium
 webdriver_manager.chrome
 re
+python-dotenv
