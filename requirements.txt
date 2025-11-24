@@ -2,6 +2,6 @@ requests
 beautifulsoup4
 pandas
 selenium
-webdriver_manager.chrome
+webdriver-manager
 re
 python-dotenv
