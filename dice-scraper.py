@@ -9,7 +9,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 import re
+import os
 
+
+SENT_JOBS_FILE = "sent_jobs.txt"
 
 def is_recent(text):
     """
@@ -121,6 +124,31 @@ def get_dice_job_results(keyword, location=""):
     return results
 
 
+def send_email_for_job(job):
+    """
+    Replace this with your actual email code.
+    """
+    print(f"\n📧 Sending email for NEW job: {job['title']} at {job['company']}\n")
+
+
+
+
+
+
+def load_sent_jobs():
+    """Load already emailed job links from file."""
+    if not os.path.exists(SENT_JOBS_FILE):
+        return set()
+    with open(SENT_JOBS_FILE, "r") as f:
+        return set(line.strip() for line in f if line.strip())
+
+
+def save_sent_job(job_link):
+    """Append a new job link to file."""
+    with open(SENT_JOBS_FILE, "a") as f:
+        f.write(job_link + "\n")
+
+
 def display_job_results(jobs):
     if not jobs:
         print("No recent jobs found (<= 5 hours old).")
@@ -138,9 +166,24 @@ def display_job_results(jobs):
 
 if __name__ == "__main__":
 
-    kw = input("Enter job keyword: ")
-    loc = input("Enter location (optional): ")
+#    kw = input("Enter job keyword: ")
+#    loc = input("Enter location (optional): ")
+
+    kw = os.getenv("JOB_KEYWORD", "SAP datasphere")
+    loc = os.getenv("JOB_LOCATION", "")
+
 
     jobs = get_dice_job_results(kw, loc)
     display_job_results(jobs)
-    # print(is_recent("nothing"))
+
+    sent_jobs = load_sent_jobs()
+
+    for job in jobs:
+        if job["link"] not in sent_jobs:
+            # Send email only for NEW jobs
+            send_email_for_job(job)
+
+            # Mark as sent
+            save_sent_job(job["link"])
+        else:
+            print(f"Skipping already-sent job: {job['title']} ({job['link']})")
