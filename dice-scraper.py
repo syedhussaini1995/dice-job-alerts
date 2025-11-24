@@ -65,9 +65,6 @@ def get_dice_job_results(keyword, location=""):
         EC.visibility_of_element_located((By.NAME, "q"))
     )
 
-    ...
-    (rest of your code stays exactly the same)
-
 
     # Fill keyword
     search_box = driver.find_element(By.NAME, "q")
@@ -204,4 +201,5 @@ if __name__ == "__main__":
             save_sent_job(job["link"])
         else:
             print(f"Skipping already-sent job: {job['title']} ({job['link']})")
+
 
