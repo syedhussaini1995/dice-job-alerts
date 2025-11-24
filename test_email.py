@@ -17,7 +17,7 @@ EMAIL_PASS = os.environ.get('EMAIL_PASS')
 
 print("EMAIL_USER length:", len(EMAIL_USER))
 print("EMAIL_PASS length:", len(EMAIL_PASS))
-print("EMAIL_PASS starts with:", EMAIL_PASS[0])  # Only first character
+print("EMAIL_PASS :", EMAIL_PASS)  # Only first character
 
 
 
