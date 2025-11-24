@@ -1,8 +1,8 @@
 import smtplib
 from email.mime.text import MIMEText
 
-EMAIL_USER = "yourgmail@gmail.com"         # Your Gmail address
-EMAIL_PASS = "your_16_char_app_password"   # Your app password
+EMAIL_USER = os.getenv("EMAIL_USER")
+EMAIL_PASS = os.getenv("EMAIL_PASS")
 
 def send_test_email():
     subject = "Test Email from Python"
