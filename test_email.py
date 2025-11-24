@@ -5,8 +5,8 @@ from email.mime.text import MIMEText
 #EMAIL_USER = os.getenv("EMAIL_USER")
 #EMAIL_PASS = os.getenv("EMAIL_PASS")
 
-EMAIL_USER = "udmey4me@gmail.com"
-EMAIL_PASS = "uqldmfuccmhvyusj"
+EMAIL_USER = os.environ.get('EMAIL_USER')
+EMAIL_PASS = os.environ.get('EMAIL_PASS')
 
 def send_test_email():
     subject = "Test Email from Python"
