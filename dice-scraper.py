@@ -1,6 +1,8 @@
 import time
 import requests
 from bs4 import BeautifulSoup
+import smtplib
+from email.mime.text import MIMEText
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -142,8 +144,20 @@ def send_email_for_job(job):
     """
     Replace this with your actual email code.
     """
-    print(f"\n📧 Sending email for NEW job: {job['title']} at {job['company']}\n")
+    
 
+
+def send_email_for_job(job):
+    msg = MIMEText(f"New job posted:\n{job['title']}\n{job['link']}")
+    msg["Subject"] = f"New Job: {job['title']}"
+    msg["From"] = EMAIL_USER
+    msg["To"] = EMAIL_USER
+
+    print(f"\n📧 Sending email for NEW job: {job['title']} at {job['company']}\n")
+    
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+        server.login(EMAIL_USER, EMAIL_PASS)
+        server.sendmail(EMAIL_USER, EMAIL_USER, msg.as_string())
 
 
 
@@ -201,5 +215,6 @@ if __name__ == "__main__":
             save_sent_job(job["link"])
         else:
             print(f"Skipping already-sent job: {job['title']} ({job['link']})")
+
 
 
