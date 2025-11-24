@@ -14,7 +14,8 @@ import re
 import os
 
 
-
+    EMAIL_USER = os.getenv("EMAIL_USER")
+    EMAIL_PASS = os.getenv("EMAIL_PASS")
 
 SENT_JOBS_FILE = "sent_jobs.txt"
 
@@ -141,13 +142,6 @@ def get_dice_job_results(keyword, location=""):
 
 
 def send_email_for_job(job):
-    """
-    Replace this with your actual email code.
-    """
-    
-
-
-def send_email_for_job(job):
     msg = MIMEText(f"New job posted:\n{job['title']}\n{job['link']}")
     msg["Subject"] = f"New Job: {job['title']}"
     msg["From"] = EMAIL_USER
@@ -215,6 +209,7 @@ if __name__ == "__main__":
             save_sent_job(job["link"])
         else:
             print(f"Skipping already-sent job: {job['title']} ({job['link']})")
+
 
 
 
