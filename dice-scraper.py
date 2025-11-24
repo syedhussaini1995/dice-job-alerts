@@ -12,6 +12,8 @@ import re
 import os
 
 
+
+
 SENT_JOBS_FILE = "sent_jobs.txt"
 
 def is_recent(text):
@@ -44,13 +46,28 @@ def is_recent(text):
 
 
 def get_dice_job_results(keyword, location=""):
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    from selenium.webdriver.chrome.options import Options
+
+    chrome_options = Options()
+    chrome_options.add_argument("--headless=new")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+
+    driver = webdriver.Chrome(
+        service=Service(ChromeDriverManager().install()),
+        options=chrome_options
+    )
+
     driver.get("https://www.dice.com/jobs")
 
     # Wait for search bar
     WebDriverWait(driver, 20).until(
         EC.visibility_of_element_located((By.NAME, "q"))
     )
+
+    ...
+    (rest of your code stays exactly the same)
+
 
     # Fill keyword
     search_box = driver.find_element(By.NAME, "q")
@@ -187,3 +204,4 @@ if __name__ == "__main__":
             save_sent_job(job["link"])
         else:
             print(f"Skipping already-sent job: {job['title']} ({job['link']})")
+
