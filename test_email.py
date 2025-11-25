@@ -8,22 +8,6 @@ from email.mime.text import MIMEText
 EMAIL_USER = os.environ.get('EMAIL_USER')
 EMAIL_PASS = os.environ.get('EMAIL_PASS')
 
-print("EMAIL:")
-print([ord(c) for c in EMAIL_USER])
-print("PWORD")
-print([ord(c) for c in EMAIL_PASS])
-
-
-#print("EMAIL_USER:", EMAIL_USER)                  # for debugging
-#print("EMAIL_PASS is set:", EMAIL_PASS is not None)
-
-#EMAIL_USER = "udmey4me@gmail.com"
-#EMAIL_PASS = "uqldmfuccmhvyusj"
-
-#print("EMAIL_USER length:", len(EMAIL_USER))
-#print("EMAIL_PASS length:", len(EMAIL_PASS))
-#print("EMAIL_PASS :", EMAIL_PASS)  # Only first character
-
 
 
 def send_test_email():
