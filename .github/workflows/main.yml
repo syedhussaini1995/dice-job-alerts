@@ -1,7 +1,9 @@
 name: Email Test
 
 on:
-  workflow_dispatch:   # allows manual run
+  workflow_dispatch:
+#  schedule:
+#    - cron: "0 * * * *"   # (Optional) Run every hour
 
 jobs:
   send-email:
@@ -11,6 +13,18 @@ jobs:
 
       - name: Checkout repo
         uses: actions/checkout@v3
+
+      - name: Download previous sent_jobs artifact (if exists)
+        uses: actions/download-artifact@v4
+        with:
+          name: sent-jobs
+          path: .
+        continue-on-error: true   # avoid failure if artifact does NOT exist yet
+
+      - name: Show restored file
+        run: |
+          echo "Restored file contents (if any):"
+          cat sent_jobs.txt || echo "No previous file found"
 
       - name: Setup Python
         uses: actions/setup-python@v4
@@ -22,14 +36,20 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run email test
+      - name: Run email scraper
         env:
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
           EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
         run: python dice-scraper.py
 
-      - name: Upload sent_jobs file
+      - name: Show updated file
+        run: |
+          echo "Updated sent_jobs.txt:"
+          cat sent_jobs.txt
+
+      - name: Upload updated sent_jobs.txt
         uses: actions/upload-artifact@v4
         with:
           name: sent-jobs
           path: sent_jobs.txt
+          if-no-files-found: error
