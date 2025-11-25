@@ -12,22 +12,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
-
-      - name: Download previous sent_jobs artifact (if exists)
-        uses: actions/download-artifact@v4
         with:
-          name: sent-jobs
-          path: .
-        continue-on-error: true   # avoid failure if artifact does NOT exist yet
-
-      - name: Show restored file
-        run: |
-          echo "Restored file contents (if any):"
-          if [ -f sent_jobs.csv ]; then
-            cat sent_jobs.csv
-          else
-            echo "No previous file found"
-          fi
+          persist-credentials: true  # needed to push changes
 
       - name: Setup Python
         uses: actions/setup-python@v4
@@ -45,18 +31,10 @@ jobs:
           EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
         run: python dice-scraper.py
 
-      - name: Show updated file
+      - name: Commit updated CSV
         run: |
-          echo "Updated sent_jobs.csv:"
-          if [ -f sent_jobs.csv ]; then
-            cat sent_jobs.csv
-          else
-            echo "No jobs sent this run"
-          fi
-
-      - name: Upload updated sent_jobs.csv
-        uses: actions/upload-artifact@v4
-        with:
-          name: sent-jobs
-          path: sent_jobs.csv
-          if-no-files-found: ignore
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add sent_jobs.csv
+          git diff --cached --quiet || git commit -m "Update sent_jobs.csv [skip ci]"
+          git push
