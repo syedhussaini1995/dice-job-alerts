@@ -245,8 +245,13 @@ if __name__ == "__main__":
     jobs = get_dice_job_results(kw, loc)
     display_job_results(jobs)
 
-    sent_jobs = load_sent_jobs()
+    # Load job links sent in last 24 hours from CSV
+    sent_jobs = load_recent_sent_jobs()
 
+    jobs = get_dice_job_results(kw, loc)
+    display_job_results(jobs)
+
+    
     for job in jobs:
         if job["link"] not in sent_jobs:
             # Send email only for NEW jobs
@@ -256,6 +261,7 @@ if __name__ == "__main__":
             save_sent_job(job["link"])
         else:
             print(f"Skipping already-sent job: {job['title']} ({job['link']})")
+
 
 
 
