@@ -17,7 +17,7 @@ import os
 EMAIL_USER = os.getenv("EMAIL_USER")
 EMAIL_PASS = os.getenv("EMAIL_PASS")
 
-SENT_JOBS_FILE = "\dice-job-scraper\sent_jobs.txt"
+SENT_JOBS_FILE = "/dice-job-scraper/sent_jobs.txt"
 
 def is_recent(text):
     """
@@ -211,6 +211,7 @@ if __name__ == "__main__":
             save_sent_job(job["link"])
         else:
             print(f"Skipping already-sent job: {job['title']} ({job['link']})")
+
 
 
 
