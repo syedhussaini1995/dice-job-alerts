@@ -8,9 +8,9 @@ from email.mime.text import MIMEText
 EMAIL_USER = os.environ.get('EMAIL_USER')
 EMAIL_PASS = os.environ.get('EMAIL_PASS')
 
-PRINT("EMAIL:")
+print("EMAIL:")
 print([ord(c) for c in EMAIL_USER])
-PRINT("PWORD")
+print("PWORD")
 print([ord(c) for c in EMAIL_PASS])
 
 
