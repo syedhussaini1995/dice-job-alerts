@@ -10,11 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout repo with credentials for push
+      # 1️⃣ Checkout repo
       - name: Checkout repo
         uses: actions/checkout@v3
         with:
-          persist-credentials: true  # required to push back
+          persist-credentials: true  # needed for push
 
       # 2️⃣ Setup Python
       - name: Setup Python
@@ -35,7 +35,7 @@ jobs:
           EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
         run: python dice-scraper.py
 
-      # 5️⃣ Show current CSV contents (optional)
+      # 5️⃣ Show updated CSV (optional)
       - name: Show updated sent_jobs.csv
         run: |
           echo "Updated sent_jobs.csv contents:"
@@ -45,11 +45,13 @@ jobs:
             echo "No jobs sent this run."
           fi
 
-      # 6️⃣ Commit and push updated CSV back to repo
-      - name: Commit updated CSV
+      # 6️⃣ Commit and push updated CSV using PAT
+      - name: Commit and push updated CSV
+        env:
+          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add sent_jobs.csv
           git diff --cached --quiet || git commit -m "Update sent_jobs.csv [skip ci]"
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          git push https://x-access-token:${PAT_TOKEN}@github.com/${{ github.repository }}.git
