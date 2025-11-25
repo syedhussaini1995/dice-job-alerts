@@ -54,4 +54,5 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add sent_jobs.csv
           git diff --cached --quiet || git commit -m "Update sent_jobs.csv [skip ci]"
-          git push https://x-access-token:${PAT_TOKEN}@github.com/${{ github.repository }}.git
+          git push https://x-access-token:${PAT_TOKEN}@github.com/syedhussaini1995/dice-job-scraper.git
+
