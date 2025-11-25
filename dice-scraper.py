@@ -167,6 +167,7 @@ def load_sent_jobs():
 
 def save_sent_job(job_link):
     """Append a new job link to file."""
+    print("DEBUG: Saving job to file:", os.path.abspath(SENT_JOBS_FILE))
     with open(SENT_JOBS_FILE, "a") as f:
         f.write(job_link + "\n")
 
@@ -209,6 +210,7 @@ if __name__ == "__main__":
             save_sent_job(job["link"])
         else:
             print(f"Skipping already-sent job: {job['title']} ({job['link']})")
+
 
 
 
