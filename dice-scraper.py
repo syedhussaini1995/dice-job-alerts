@@ -28,33 +28,26 @@ CSV_FILE = "sent_jobs.csv"
 # ---------------------------------------------------------
 
 def ensure_csv_exists():
-    """Create CSV file with headers if it does not exist."""
     if not os.path.exists(CSV_FILE):
-        with open(CSV_FILE, "w", newline="") as f:
+        with open(CSV_FILE, "w", newline="", encoding="utf-8") as f:
             writer = csv.writer(f)
-            writer.writerow(["link", "timestamp"])  # header row
+            writer.writerow(["job_id", "timestamp"])  # header
 
 
 
 
 def load_recent_sent_jobs():
-    """Load job links sent within the last 24 hours."""
     ensure_csv_exists()
-
-    recent = set()
+    recent_jobs = set()
     cutoff = datetime.utcnow() - timedelta(hours=24)
 
-    with open(CSV_FILE, "r") as f:
+    with open(CSV_FILE, "r", newline="", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for row in reader:
-            try:
-                ts = datetime.fromisoformat(row["timestamp"])
-                if ts >= cutoff:
-                    recent.add(row["link"])
-            except:
-                continue
-
-    return recent
+            job_time = datetime.fromisoformat(row["timestamp"])
+            if job_time >= cutoff:
+                recent_jobs.add(row["job_id"])
+    return recent_jobs
 
 
 
@@ -209,13 +202,10 @@ def load_sent_jobs():
 
 
 
-def save_sent_job(link):
-    """Append job link + timestamp (UTC) into CSV."""
-    ensure_csv_exists()
-
-    with open(CSV_FILE, "a", newline="") as f:
+def save_sent_job(job_id):
+    with open(CSV_FILE, "a", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
-        writer.writerow([link, datetime.utcnow().isoformat()])
+        writer.writerow([job_id, datetime.utcnow().isoformat()])
 
 
 
@@ -264,6 +254,7 @@ if __name__ == "__main__":
             save_sent_job(job["link"])
         else:
             print(f"Skipping already-sent job: {job['title']} ({job['link']})")
+
 
 
 
