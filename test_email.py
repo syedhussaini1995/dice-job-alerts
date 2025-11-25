@@ -9,9 +9,9 @@ EMAIL_USER = os.environ.get('EMAIL_USER')
 EMAIL_PASS = os.environ.get('EMAIL_PASS')
 
 PRINT("EMAIL:")
-print([ord(c) for c in EMAIL_PASS])
-PRINT("PWORD")
 print([ord(c) for c in EMAIL_USER])
+PRINT("PWORD")
+print([ord(c) for c in EMAIL_PASS])
 
 
 #print("EMAIL_USER:", EMAIL_USER)                  # for debugging
