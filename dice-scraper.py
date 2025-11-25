@@ -17,7 +17,46 @@ import os
 EMAIL_USER = os.getenv("EMAIL_USER")
 EMAIL_PASS = os.getenv("EMAIL_PASS")
 
-SENT_JOBS_FILE = "/home/runner/work/dice-job-scraper/dice-job-scraper/sent_jobs.txt"
+CSV_FILE = "sent_jobs.csv"
+
+
+# ---------------------------------------------------------
+#     CSV STORAGE HELPERS
+# ---------------------------------------------------------
+
+def ensure_csv_exists():
+    """Create CSV file with headers if it does not exist."""
+    if not os.path.exists(CSV_FILE):
+        with open(CSV_FILE, "w", newline="") as f:
+            writer = csv.writer(f)
+            writer.writerow(["link", "timestamp"])  # header row
+
+
+
+
+def load_recent_sent_jobs():
+    """Load job links sent within the last 24 hours."""
+    ensure_csv_exists()
+
+    recent = set()
+    cutoff = datetime.utcnow() - timedelta(hours=24)
+
+    with open(CSV_FILE, "r") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            try:
+                ts = datetime.fromisoformat(row["timestamp"])
+                if ts >= cutoff:
+                    recent.add(row["link"])
+            except:
+                continue
+
+    return recent
+
+
+
+
+
 
 def is_recent(text):
     """
@@ -166,11 +205,17 @@ def load_sent_jobs():
         return set(line.strip() for line in f if line.strip())
 
 
-def save_sent_job(job_link):
-    """Append a new job link to file."""
-    print("DEBUG: Saving job to file:", os.path.abspath(SENT_JOBS_FILE))
-    with open(SENT_JOBS_FILE, "a") as f:
-        f.write(job_link + "\n")
+
+def save_sent_job(link):
+    """Append job link + timestamp (UTC) into CSV."""
+    ensure_csv_exists()
+
+    with open(CSV_FILE, "a", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow([link, datetime.utcnow().isoformat()])
+
+
+
 
 
 def display_job_results(jobs):
@@ -211,6 +256,7 @@ if __name__ == "__main__":
             save_sent_job(job["link"])
         else:
             print(f"Skipping already-sent job: {job['title']} ({job['link']})")
+
 
 
 
