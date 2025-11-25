@@ -160,6 +160,7 @@ def send_email_for_job(job):
 def load_sent_jobs():
     """Load already emailed job links from file."""
     if not os.path.exists(SENT_JOBS_FILE):
+        print("unable to open previous file")
         return set()
     with open(SENT_JOBS_FILE, "r") as f:
         return set(line.strip() for line in f if line.strip())
@@ -210,6 +211,7 @@ if __name__ == "__main__":
             save_sent_job(job["link"])
         else:
             print(f"Skipping already-sent job: {job['title']} ({job['link']})")
+
 
 
 
