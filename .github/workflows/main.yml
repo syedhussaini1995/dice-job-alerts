@@ -3,14 +3,13 @@ name: Email Test
 on:
   workflow_dispatch:
 #  schedule:
-#    - cron: "0 * * * *"   # (Optional) Run every hour
+#    - cron: "0 * * * *"   # optional hourly run
 
 jobs:
   send-email:
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout repo
         uses: actions/checkout@v3
 
@@ -24,7 +23,11 @@ jobs:
       - name: Show restored file
         run: |
           echo "Restored file contents (if any):"
-          cat sent_jobs.txt || echo "No previous file found"
+          if [ -f sent_jobs.csv ]; then
+            cat sent_jobs.csv
+          else
+            echo "No previous file found"
+          fi
 
       - name: Setup Python
         uses: actions/setup-python@v4
@@ -44,12 +47,16 @@ jobs:
 
       - name: Show updated file
         run: |
-          echo "Updated sent_jobs.txt:"
-          cat sent_jobs.txt
+          echo "Updated sent_jobs.csv:"
+          if [ -f sent_jobs.csv ]; then
+            cat sent_jobs.csv
+          else
+            echo "No jobs sent this run"
+          fi
 
-      - name: Upload updated sent_jobs.txt
+      - name: Upload updated sent_jobs.csv
         uses: actions/upload-artifact@v4
         with:
           name: sent-jobs
-          path: sent_jobs.txt
-          if-no-files-found: error
+          path: sent_jobs.csv
+          if-no-files-found: ignore
