@@ -3,7 +3,7 @@ name: Dice Job Email Scraper
 on:
   workflow_dispatch:
 #  schedule:
-#    - cron: "0 * * * *"   # optional hourly run
+#    - cron: "0 * * * *"   # optional: run every hour
 
 jobs:
   send-email:
@@ -11,10 +11,10 @@ jobs:
 
     steps:
       # 1️⃣ Checkout repo
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          persist-credentials: true
+          persist-credentials: true  # required for pushing
 
       # 2️⃣ Setup Python
       - name: Setup Python
@@ -28,25 +28,25 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
 
-      # 4️⃣ Run scraper
-      - name: Run email scraper
+      # 4️⃣ Run the scraper
+      - name: Run Dice job scraper
         env:
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
           EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
         run: python dice-scraper.py
 
-      # 5️⃣ Show CSV contents (optional)
+      # 5️⃣ Show current sent_jobs.csv (optional)
       - name: Show sent_jobs.csv
         run: |
-          echo "Current sent_jobs.csv:"
+          echo "Current sent_jobs.csv contents:"
           if [ -f sent_jobs.csv ]; then
             cat sent_jobs.csv
           else
-            echo "No jobs sent yet."
+            echo "No jobs sent this run."
           fi
 
-      # 6️⃣ Commit and push CSV using PAT
-      - name: Commit and push updated CSV
+      # 6️⃣ Commit and push updated CSV using PAT
+      - name: Commit and push sent_jobs.csv
         env:
           PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
