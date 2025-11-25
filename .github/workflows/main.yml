@@ -1,40 +1,55 @@
-name: Email Test
+name: Dice Job Email Scraper
 
 on:
   workflow_dispatch:
 #  schedule:
-#    - cron: "0 * * * *"   # optional hourly run
+#    - cron: "0 * * * *"   # optional: run every hour
 
 jobs:
   send-email:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout repo with credentials for push
       - name: Checkout repo
         uses: actions/checkout@v3
         with:
-          persist-credentials: true  # needed to push changes
+          persist-credentials: true  # required to push back
 
+      # 2️⃣ Setup Python
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.10"
 
+      # 3️⃣ Install dependencies
       - name: Install dependencies
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
 
+      # 4️⃣ Run the scraper
       - name: Run email scraper
         env:
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
           EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
         run: python dice-scraper.py
 
+      # 5️⃣ Show current CSV contents (optional)
+      - name: Show updated sent_jobs.csv
+        run: |
+          echo "Updated sent_jobs.csv contents:"
+          if [ -f sent_jobs.csv ]; then
+            cat sent_jobs.csv
+          else
+            echo "No jobs sent this run."
+          fi
+
+      # 6️⃣ Commit and push updated CSV back to repo
       - name: Commit updated CSV
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add sent_jobs.csv
           git diff --cached --quiet || git commit -m "Update sent_jobs.csv [skip ci]"
-          git push
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
