@@ -10,6 +10,8 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
+
+from job_scraper_utils import extract_job_description # NEW IMPORT
 import re
 import os
 import csv
@@ -251,6 +253,7 @@ if __name__ == "__main__":
             save_sent_job(job["link"])
         else:
             print(f"Skipping already-sent job: {job['title']} ({job['link']})")
+
 
 
 
