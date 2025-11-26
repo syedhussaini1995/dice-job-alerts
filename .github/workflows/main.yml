@@ -44,8 +44,7 @@ jobs:
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
           EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
           # Use default values for env vars if they are set in your script's __main__ block
-          JOB_KEYWORD: ${{ env.JOB_KEYWORD || 'datasphere' }}
-          JOB_LOCATION: ${{ env.JOB_LOCATION || '' }}
+          
         run: python dice-scraper.py
 
       # 5️⃣ Commit and push updated CSV using the default GITHUB_TOKEN
