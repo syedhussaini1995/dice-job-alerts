@@ -231,7 +231,7 @@ if __name__ == "__main__":
 #    kw = input("Enter job keyword: ")
 #    loc = input("Enter location (optional): ")
 
-    kw = os.getenv("JOB_KEYWORD", "datasphere")
+    kw = os.getenv("JOB_KEYWORD", "SAP BW")
     loc = os.getenv("JOB_LOCATION", "")
 
 
@@ -251,6 +251,7 @@ if __name__ == "__main__":
             save_sent_job(job["link"])
         else:
             print(f"Skipping already-sent job: {job['title']} ({job['link']})")
+
 
 
 
