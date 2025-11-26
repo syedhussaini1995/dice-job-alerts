@@ -250,31 +250,84 @@ def display_job_results(jobs):
         print("-" * 40)
 
 
+
+
+# ... all your existing functions above this line ...
+
 if __name__ == "__main__":
+    
+    # Define the list of keywords you want to search for
+    # You can add or remove keywords here easily
+    search_keywords = ["SAP BW", "Datasphere"]
+    loc = os.getenv("JOB_LOCATION", "") # Location can remain the same for all searches
 
-#    kw = input("Enter job keyword: ")
-#    loc = input("Enter location (optional): ")
-
-    kw = os.getenv("JOB_KEYWORD", "SAP FICO")
-    loc = os.getenv("JOB_LOCATION", "")
-
-
-    jobs = get_dice_job_results(kw, loc)
-    display_job_results(jobs)
-
-    # Load job links sent in last 24 hours from CSV
+    print("--- Starting Job Search Program ---")
+    
+    # Load job links sent in the last 24 hours from CSV once
     sent_jobs = load_recent_sent_jobs()
+    
+    # Loop through each keyword in the list
+    for kw in search_keywords:
+        print(f"\n##################################################")
+        print(f"## Searching for jobs with keyword: {kw} ##")
+        print(f"##################################################\n")
+        
+        # 1. Get job results for the current keyword
+        jobs = get_dice_job_results(kw, loc)
+        
+        # 2. Display the found jobs (optional)
+        display_job_results(jobs)
+
+        # 3. Process and send emails for new jobs
+        for job in jobs:
+            # The job link serves as the unique ID for checking if it's already sent
+            job_id = job["link"] 
+            
+            if job_id not in sent_jobs:
+                # Send email only for NEW jobs
+                send_email_for_job(job)
+
+                # Add the job ID to the set of sent jobs immediately to avoid duplicates in the same run
+                sent_jobs.add(job_id)
+                
+                # Mark as sent in the CSV file
+                save_sent_job(job_id)
+            else:
+                print(f"Skipping already-sent job: {job['title']} ({job['link']})")
+                
+    print("\n--- Job Search Program Finished ---")
+
+
+
+
+
+
+# if __name__ == "__main__":
+
+# #    kw = input("Enter job keyword: ")
+# #    loc = input("Enter location (optional): ")
+
+#     kw = os.getenv("JOB_KEYWORD", "SAP FICO")
+#     loc = os.getenv("JOB_LOCATION", "")
+
+
+#     jobs = get_dice_job_results(kw, loc)
+#     display_job_results(jobs)
+
+#     # Load job links sent in last 24 hours from CSV
+#     sent_jobs = load_recent_sent_jobs()
 
     
-    for job in jobs:
-        if job["link"] not in sent_jobs:
-            # Send email only for NEW jobs
-            send_email_for_job(job)
+#     for job in jobs:
+#         if job["link"] not in sent_jobs:
+#             # Send email only for NEW jobs
+#             send_email_for_job(job)
 
-            # Mark as sent
-            save_sent_job(job["link"])
-        else:
-            print(f"Skipping already-sent job: {job['title']} ({job['link']})")
+#             # Mark as sent
+#             save_sent_job(job["link"])
+#         else:
+#             print(f"Skipping already-sent job: {job['title']} ({job['link']})")
+
 
 
 
