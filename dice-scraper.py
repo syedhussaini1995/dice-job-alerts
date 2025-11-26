@@ -201,7 +201,7 @@ def send_email_for_job(job):
 
     msg = MIMEText(email_body)
     
-    msg = MIMEText(f"New job posted:\n{job['title']}\n{job['link']}")
+#    msg = MIMEText(f"New job posted:\n{job['title']}\n{job['link']}")
     msg["Subject"] = f"New Job: {job['title']}"
     msg["From"] = EMAIL_USER
     msg["To"] = EMAIL_USER
@@ -275,6 +275,7 @@ if __name__ == "__main__":
             save_sent_job(job["link"])
         else:
             print(f"Skipping already-sent job: {job['title']} ({job['link']})")
+
 
 
 
