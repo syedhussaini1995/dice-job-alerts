@@ -51,38 +51,73 @@ def load_recent_sent_jobs():
                 recent_jobs.add(row["job_id"])
     return recent_jobs
 
-
-
-
-
+import re
 
 def is_recent(text):
     """
-    Returns True if the posted/updated time is:
+    Returns True if the posted/updated time indicates the job is fresh:
     - "moments ago"
-    - "1 hour ago"
-    - "2 hours ago"
-    - ...
-    - "5 hours ago"
+    - "X minutes ago"
+    - "Updated X minutes ago"
+    - "Updated in X minutes"
+    - "X hours ago"      (<= 5 hours)
+    - "Updated X hours ago"
     """
+
+    if not isinstance(text, str) or not text.strip():
+        return False
+
     text = text.lower()
 
+    # Case: "moments ago"
     if "moments ago" in text:
         return True
 
-    # Find "X hours ago"
-    if text and isinstance(text, str):
-        match = re.search(r"(\d+)\s+hours?", text)
+    # Case: minutes freshness (e.g. "15 minutes ago", "updated in 31 minutes")
+    minute_match = re.search(r"(updated\s*(in|)\s*)?(\d+)\s+minutes?\s*ago?", text)
+    if minute_match:
+        minutes = int(minute_match.group(3))
+        return True  # any minute value means it's very recent
 
-    else:
-        # Handle the case where text is not a valid string
-        print("The input 'text' is not a valid string.")
-
-    if match:
-        hours = int(match.group(1))
+    # Case: hours freshness (e.g. "3 hours ago", "updated 2 hours ago")
+    hour_match = re.search(r"(updated\s*)?(\d+)\s+hours?\s+ago?", text)
+    if hour_match:
+        hours = int(hour_match.group(2))
         return hours <= 5
 
     return False
+
+
+
+
+
+# def is_recent(text):
+#     """
+#     Returns True if the posted/updated time is:
+#     - "moments ago"
+#     - "1 hour ago"
+#     - "2 hours ago"
+#     - ...
+#     - "5 hours ago"
+#     """
+#     text = text.lower()
+
+#     if "moments ago" in text:
+#         return True
+
+#     # Find "X hours ago"
+#     if text and isinstance(text, str):
+#         match = re.search(r"(\d+)\s+hours?", text)
+
+#     else:
+#         # Handle the case where text is not a valid string
+#         print("The input 'text' is not a valid string.")
+
+#     if match:
+#         hours = int(match.group(1))
+#         return hours <= 5
+
+#     return False
 
 
 def get_dice_job_results(keyword, location=""):
@@ -327,6 +362,7 @@ if __name__ == "__main__":
 #             save_sent_job(job["link"])
 #         else:
 #             print(f"Skipping already-sent job: {job['title']} ({job['link']})")
+
 
 
 
