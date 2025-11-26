@@ -1,24 +1,32 @@
-name: Dice Job Email Scraper
+name: Dice Job Email Scraper 📧
 
 on:
+  # Allows you to run the workflow manually from the GitHub Actions tab
   workflow_dispatch:
-#  schedule:
-#    - cron: "0 * * * *"   # optional: run every hour
+  # Uncomment the schedule section to run it automatically
+  schedule:
+    - cron: "0 * * * *" # Runs every hour
 
 jobs:
   send-email:
+    # Use 'permissions' to grant write access only where needed, 
+    # instead of relying on tokens/PATs for simple file updates.
+    permissions:
+      contents: write # This grants the default GITHUB_TOKEN write access
     runs-on: ubuntu-latest
 
     steps:
       # 1️⃣ Checkout repo
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4 # Use the latest version
         with:
-          persist-credentials: true  # required for pushing
-
+          # Fetch full history is necessary for a successful 'git commit'
+          fetch-depth: 0 
+          # Remove: persist-credentials: true is not needed when using GITHUB_TOKEN
+          
       # 2️⃣ Setup Python
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5 # Use the latest version
         with:
           python-version: "3.10"
 
@@ -26,6 +34,8 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
+          # Assuming you have a requirements.txt with: 
+          # requests, beautifulsoup4, smtplib, selenium, webdriver-manager, etc.
           pip install -r requirements.txt
 
       # 4️⃣ Run the scraper
@@ -33,26 +43,26 @@ jobs:
         env:
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
           EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+          # Use default values for env vars if they are set in your script's __main__ block
+          JOB_KEYWORD: ${{ env.JOB_KEYWORD || 'datasphere' }}
+          JOB_LOCATION: ${{ env.JOB_LOCATION || '' }}
         run: python dice-scraper.py
 
-      # 5️⃣ Show current sent_jobs.csv (optional)
-      - name: Show sent_jobs.csv
-        run: |
-          echo "Current sent_jobs.csv contents:"
-          if [ -f sent_jobs.csv ]; then
-            cat sent_jobs.csv
-          else
-            echo "No jobs sent this run."
-          fi
-
-      # 6️⃣ Commit and push updated CSV using PAT
+      # 5️⃣ Commit and push updated CSV using the default GITHUB_TOKEN
       - name: Commit and push sent_jobs.csv
-        env:
-          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          # Use the GITHUB_TOKEN for authentication (no need for PAT_TOKEN)
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Add the file to be tracked
           git add sent_jobs.csv
-          git diff --cached --quiet || git commit -m "Update sent_jobs.csv [skip ci]"
-          git push https://x-access-token:${PAT_TOKEN}@github.com/syedhussaini1995/dice-job-scraper.git
-
+          
+          # Check if there are any changes (only commit if 'git diff' is NOT quiet)
+          if ! git diff --cached --exit-code; then
+            git commit -m "Automated: Update sent jobs CSV [skip ci]"
+            # Push using the default GITHUB_TOKEN (provided by the 'permissions: contents: write')
+            git push
+          else
+            echo "No changes detected in sent_jobs.csv. Skipping commit."
+          fi
