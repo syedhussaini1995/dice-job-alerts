@@ -51,7 +51,7 @@ def load_recent_sent_jobs():
                 recent_jobs.add(row["job_id"])
     return recent_jobs
 
-import re
+
 
 def is_recent(text):
     """
@@ -362,6 +362,7 @@ if __name__ == "__main__":
 #             save_sent_job(job["link"])
 #         else:
 #             print(f"Skipping already-sent job: {job['title']} ({job['link']})")
+
 
 
 
