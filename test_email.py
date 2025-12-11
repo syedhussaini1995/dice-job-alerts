@@ -12,7 +12,7 @@ EMAIL_PASS = os.environ.get('EMAIL_PASS')
 
 def send_test_email():
     subject = "Test Email from Python"
-    body = "Hello! This is a test email sent from your Python script."
+    body = "Hello! This is a test email sent using Python script"
 
     msg = MIMEText(body)
     msg["Subject"] = subject
