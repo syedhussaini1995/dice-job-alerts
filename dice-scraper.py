@@ -249,8 +249,6 @@ def send_email_for_job(job):
 
 
 
-
-
 def load_sent_jobs():
     """Load already emailed job links from file."""
     if not os.path.exists(SENT_JOBS_FILE):
@@ -265,8 +263,6 @@ def save_sent_job(job_id):
     with open(CSV_FILE, "a", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow([job_id, datetime.utcnow().isoformat()])
-
-
 
 
 
@@ -291,8 +287,8 @@ def display_job_results(jobs):
 
 if __name__ == "__main__":
     
-    # Define the list of keywords you want to search for
-    # You can add or remove keywords here easily
+    # Define the list of keywords to search for
+    #  add or remove keywords here
     search_keywords = ["SAP BW", "Datasphere"]
     loc = os.getenv("JOB_LOCATION", "") # Location can remain the same for all searches
 
@@ -322,7 +318,7 @@ if __name__ == "__main__":
                 # Send email only for NEW jobs
                 send_email_for_job(job)
 
-                # Add the job ID to the set of sent jobs immediately to avoid duplicates in the same run
+                # add the job ID to the set of sent jobs immediately to avoid duplicates in the same run
                 sent_jobs.add(job_id)
                 
                 # Mark as sent in the CSV file
@@ -331,38 +327,6 @@ if __name__ == "__main__":
                 print(f"Skipping already-sent job: {job['title']} ({job['link']})")
                 
     print("\n--- Job Search Program Finished ---")
-
-
-
-
-
-
-# if __name__ == "__main__":
-
-# #    kw = input("Enter job keyword: ")
-# #    loc = input("Enter location (optional): ")
-
-#     kw = os.getenv("JOB_KEYWORD", "SAP FICO")
-#     loc = os.getenv("JOB_LOCATION", "")
-
-
-#     jobs = get_dice_job_results(kw, loc)
-#     display_job_results(jobs)
-
-#     # Load job links sent in last 24 hours from CSV
-#     sent_jobs = load_recent_sent_jobs()
-
-    
-#     for job in jobs:
-#         if job["link"] not in sent_jobs:
-#             # Send email only for NEW jobs
-#             send_email_for_job(job)
-
-#             # Mark as sent
-#             save_sent_job(job["link"])
-#         else:
-#             print(f"Skipping already-sent job: {job['title']} ({job['link']})")
-
 
 
 
