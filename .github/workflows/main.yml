@@ -1,15 +1,15 @@
-name: Dice Job Email Scraper 📧
+name: Dice Job Alert
 
 on:
-  # Allows you to run the workflow manually from the GitHub Actions tab
+  # Allows to run the workflow manually from the GitHub Actions tab
   workflow_dispatch:
-  # Uncomment the schedule section to run it automatically
+  # Uncommenting the schedule section to runs it automatically
   schedule:
-    - cron: "0 * * * *" # Runs every hour
+    - cron: "0 * * * *" # Run every hour
 
 jobs:
   send-email:
-    # Use 'permissions' to grant write access only where needed, 
+    # using 'permissions' to grant write access only where needed, 
     # instead of relying on tokens/PATs for simple file updates.
     permissions:
       contents: write # This grants the default GITHUB_TOKEN write access
