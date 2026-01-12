@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout repo
+      #  Checkout repo
       - name: Checkout repository
         uses: actions/checkout@v4 # Use the latest version
         with:
@@ -24,13 +24,13 @@ jobs:
           fetch-depth: 0 
           # Remove: persist-credentials: true is not needed when using GITHUB_TOKEN
           
-      # 2️⃣ Setup Python
+      #  Setup Python
       - name: Setup Python
         uses: actions/setup-python@v5 # Use the latest version
         with:
           python-version: "3.10"
 
-      # 3️⃣ Install dependencies
+      #  Install dependencies
       - name: Install dependencies
         run: |
           pip install --upgrade pip
@@ -38,16 +38,16 @@ jobs:
           # requests, beautifulsoup4, smtplib, selenium, webdriver-manager, etc.
           pip install -r requirements.txt
 
-      # 4️⃣ Run the scraper
+      #  Run the scraper
       - name: Run Dice job scraper
         env:
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
           EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
-          # Use default values for env vars if they are set in your script's __main__ block
+          # Use default values for env vars if they are set in script's main block
           
         run: python dice-scraper.py
 
-      # 5️⃣ Commit and push updated CSV using the default GITHUB_TOKEN
+      #  Commit and push updated CSV using the default GITHUB_TOKEN
       - name: Commit and push sent_jobs.csv
         run: |
           # Use the GITHUB_TOKEN for authentication (no need for PAT_TOKEN)
