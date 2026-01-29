@@ -26,7 +26,8 @@ def extract_job_description(job_link):
         # or the 'job-description' id, or similar.
         
 
-        description_section = soup.find(class="job-detail-description-module__EJDWFq__jobDescription")
+        description_section = soup.find(class_="job-detail-description-module__EJDWFq__jobDescription")
+
 
         # If the main section is found, extract the text content
         if description_section:
