@@ -189,13 +189,26 @@ def get_dice_job_results(keyword, location=""):
             # Fetch job detail page for more accurate posted time
             detail_res = requests.get(job_link, timeout=10)
             soup = BeautifulSoup(detail_res.text, "html.parser")
-            detail_dates = soup.find("li", {"data-cy": "postedDate"})
+            #detail_dates = soup.find("li", {"data-cy": "postedDate"})
 
+
+            # Locate the div containing the job title and posted date
+            posted_date_div = soup.find("div", class_="flex flex-col gap-1")
+
+            # Find the span that contains the "Posted" text (likely the second <span>)
+            posted_text = None
+            if posted_date_div:
+                # Get all spans within this div
+                spans = posted_date_div.find_all("span", class_="text-sm font-normal text-font-light")
+                for span in spans:
+                    if "Posted" in span.text:
+                        posted_text = span.get_text(strip=True)
+                        break
 
             # detail_dates = soup.find_all("span", {"data-testid": "posted-date"})
-            for d in detail_dates:
-                posted_text = d.get_text(strip=True)
-                break
+            #for d in detail_dates:
+            #    posted_text = d.get_text(strip=True)
+            #    break
 
             if posted_text and is_recent(posted_text):
                 results.append({
@@ -327,6 +340,7 @@ if __name__ == "__main__":
                 print(f"Skipping already-sent job: {job['title']} ({job['link']})")
                 
     print("\n--- Job Search Program Finished ---")
+
 
 
 
