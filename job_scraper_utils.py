@@ -24,6 +24,8 @@ def extract_job_description(job_link):
         # This selector targets the main description area on a typical Dice job page.
         # Look for a div with the data-testid 'job-description-section' 
         # or the 'job-description' id, or similar.
+        
+
         description_section = soup.find(class="job-detail-description-module__EJDWFq__jobDescription")
 
         # If the main section is found, extract the text content
